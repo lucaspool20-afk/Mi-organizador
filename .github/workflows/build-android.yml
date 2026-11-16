@@ -29,7 +29,7 @@ jobs:
           p = Path('android/app/src/main/AndroidManifest.xml')
           s = p.read_text()
           marker = '<application'
-          permissions = '    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\\n    '
+          permissions = '    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\n    '
           if 'android.permission.POST_NOTIFICATIONS' not in s:
               s = s.replace(marker, permissions + marker, 1)
           p.write_text(s)
