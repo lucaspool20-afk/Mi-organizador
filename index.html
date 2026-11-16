@@ -10,15 +10,6 @@
   <title>Mi Organizador</title>
   <style>
 
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js")
-      .catch(error => console.error("Error:", error));
-  });
-}
-</script>
-
 
 
   body {
@@ -78,6 +69,14 @@ button {
 .complete { background: #15803d; }
 #count { color: #93c5fd; }
 </style>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .catch(error => console.error("Error:", error));
+  });
+}
+</script>
 </head>
 <body>
 
