@@ -68,6 +68,17 @@ button {
 .delete { background: #b91c1c; }
 .complete { background: #15803d; }
 #count { color: #93c5fd; }
+.calendar-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.calendar-head button { min-width:44px; }
+.calendar-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px; text-align:center; }
+.calendar-weekday { color:#93c5fd; font-size:12px; padding:6px 0; }
+.calendar-day { min-width:0; padding:10px 2px; background:#334155; border-radius:8px; color:white; }
+.calendar-day.empty { background:transparent; }
+.calendar-day.selected { outline:2px solid #60a5fa; background:#1d4ed8; }
+.calendar-day.today { border:1px solid #60a5fa; }
+.calendar-day.has-task:after { content:""; display:block; width:5px; height:5px; border-radius:50%; background:#4ade80; margin:4px auto 0; }
+#calendarSelected { margin-top:14px; }
+.calendar-task { padding:8px; margin:6px 0; background:#334155; border-radius:8px; }
 </style>
 <script>
 if ("serviceWorker" in navigator) {
@@ -91,6 +102,9 @@ if ("serviceWorker" in navigator) {
   <label>Fecha de vencimiento</label>
   <input type="date" id="date">
 
+  <label>Hora (opcional)</label>
+  <input type="time" id="time">
+
   <label>Prioridad</label>
   <select id="priority">
     <option value="low">Baja</option>
@@ -99,6 +113,17 @@ if ("serviceWorker" in navigator) {
   </select>
 
   <button onclick="addTask()">Agregar tarea</button>
+</div>
+
+<div class="card">
+  <h2>🗓️ Calendario mensual</h2>
+  <div class="calendar-head">
+    <button type="button" onclick="changeMonth(-1)" aria-label="Mes anterior">‹</button>
+    <strong id="calendarMonth"></strong>
+    <button type="button" onclick="changeMonth(1)" aria-label="Mes siguiente">›</button>
+  </div>
+  <div id="calendarGrid" class="calendar-grid"></div>
+  <div id="calendarSelected"></div>
 </div>
 
 <div class="card">
@@ -123,8 +148,42 @@ let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
 tasks = tasks.map(t =>
   typeof t === "string"
     ? {text:t, done:false, date:"", priority:"medium"}
-    : {...t, date:t.date || "", priority:t.priority || "medium"}
+    : {...t, date:t.date || "", time:t.time || "", priority:t.priority || "medium"}
 );
+
+let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+let selectedCalendarDate = localDateKey(new Date());
+
+function localDateKey(date) {
+  return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
+}
+function changeMonth(amount) {
+  calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth()+amount, 1);
+  renderCalendar();
+}
+function renderCalendar() {
+  const grid=document.getElementById("calendarGrid"), title=document.getElementById("calendarMonth"), selected=document.getElementById("calendarSelected");
+  if(!grid||!title||!selected)return;
+  title.textContent=calendarMonth.toLocaleDateString("es-AR",{month:"long",year:"numeric"});
+  grid.replaceChildren();
+  ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].forEach(day=>{const e=document.createElement("div");e.className="calendar-weekday";e.textContent=day;grid.append(e);});
+  const y=calendarMonth.getFullYear(),m=calendarMonth.getMonth(),offset=(new Date(y,m,1).getDay()+6)%7,days=new Date(y,m+1,0).getDate();
+  for(let i=0;i<offset;i++){const e=document.createElement("div");e.className="calendar-day empty";grid.append(e);}
+  for(let d=1;d<=days;d++){
+    const key=y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"),b=document.createElement("button");
+    b.type="button";b.className="calendar-day";b.textContent=d;
+    if(key===selectedCalendarDate)b.classList.add("selected");
+    if(key===localDateKey(new Date()))b.classList.add("today");
+    if(tasks.some(t=>t.date===key))b.classList.add("has-task");
+    b.onclick=()=>{selectedCalendarDate=key;document.getElementById("date").value=key;renderCalendar();};
+    grid.append(b);
+  }
+  selected.replaceChildren();
+  const h=document.createElement("strong");h.textContent="Actividades del "+new Date(selectedCalendarDate+"T12:00:00").toLocaleDateString("es-AR");selected.append(h);
+  const dayTasks=tasks.filter(t=>t.date===selectedCalendarDate).sort((a,b)=>(a.time||"").localeCompare(b.time||""));
+  if(!dayTasks.length){const p=document.createElement("p");p.textContent="No hay tareas para este día. Podés elegirlo para una nueva tarea.";selected.append(p);}
+  dayTasks.forEach(t=>{const p=document.createElement("div");p.className="calendar-task";p.textContent=(t.done?"✓ ":"• ")+(t.time?t.time+" · ":"")+t.text+(t.done?" (completada)":"");selected.append(p);});
+}
 
 function save() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -141,12 +200,16 @@ function addTask() {
   tasks.push({
     text: input.value.trim(),
     date: document.getElementById("date").value,
+    time: document.getElementById("time").value,
     priority: document.getElementById("priority").value,
     done: false
   });
 
+  selectedCalendarDate = tasks[tasks.length-1].date || selectedCalendarDate;
+  if(tasks[tasks.length-1].date){const d=new Date(tasks[tasks.length-1].date+"T12:00:00");calendarMonth=new Date(d.getFullYear(),d.getMonth(),1);}
   input.value = "";
   document.getElementById("date").value = "";
+  document.getElementById("time").value = "";
   document.getElementById("priority").value = "medium";
   save();
 }
@@ -165,7 +228,9 @@ function render() {
   const sorted = [...tasks].sort((a,b) => {
     if (!a.date) return 1;
     if (!b.date) return -1;
-    return a.date.localeCompare(b.date);
+    const byDate=a.date.localeCompare(b.date);
+    if(byDate!==0)return byDate;
+    return (a.time||"").localeCompare(b.time||"");
   });
 
   sorted.forEach(task => {
@@ -181,7 +246,7 @@ function render() {
     const dateText = task.date
       ? new Date(task.date + "T12:00:00").toLocaleDateString("es-AR")
       : "Sin fecha";
-    info.textContent = "📅 " + dateText + " · Prioridad: " +
+    info.textContent = "📅 " + dateText + (task.time ? " · 🕒 " + task.time : "") + " · Prioridad: " +
       ({high:"Alta",medium:"Media",low:"Baja"}[task.priority] || "Media");
 
     if (!task.done && task.date && task.date < today) {
@@ -217,13 +282,15 @@ function render() {
     container.append(div);
   });
 
+  renderCalendar();
+
   const next = sorted.filter(t => !t.done && t.date);
   if (next.length === 0) {
     upcoming.textContent = "No tenés actividades con fecha pendientes.";
   } else {
     next.slice(0,5).forEach(t => {
       const p = document.createElement("p");
-      p.textContent = "📌 " + t.text + " — " +
+      p.textContent = "📌 " + (t.time ? t.time + " · " : "") + t.text + " — " +
         new Date(t.date + "T12:00:00").toLocaleDateString("es-AR");
       upcoming.append(p);
     });
