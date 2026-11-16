@@ -1,1 +1,102 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Organizador</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #101827;
+  color: white;
+  margin: 0;
+  padding: 25px;
+}
+h1 { color: #60a5fa; }
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 20px;
+}
+input, button {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 8px;
+}
+input { width: 65%; }
+button {
+  background: #3b82f6;
+  color: white;
+  cursor: pointer;
+}
+li {
+  padding: 12px 0;
+  border-bottom: 1px solid #475569;
+}
+.done { text-decoration: line-through; opacity: .5; }
+</style>
+</head>
+<body>
+
+<h1>Mi Organizador</h1>
+<p>Un paso a la vez. Cada día cuenta.</p>
+
+<div class="card">
+  <h2>Mis tareas</h2>
+  <input id="task" placeholder="Escribí una tarea">
+  <button onclick="addTask()">Agregar</button>
+  <ul id="tasks"></ul>
+</div>
+
+<div class="card">
+  <h2>Mi objetivo</h2>
+  <p>Organizarme y avanzar cada día.</p>
+</div>
+
+<script>
+let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+function save() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  render();
+}
+
+function addTask() {
+  let input = document.getElementById("task");
+  if (!input.value.trim()) return;
+  tasks.push({text: input.value, done: false});
+  input.value = "";
+  save();
+}
+
+function render() {
+  document.getElementById("tasks").innerHTML = "";
+  tasks.forEach((task, i) => {
+    let li = document.createElement("li");
+    li.className = task.done ? "done" : "";
+    li.textContent = task.text + " ";
+    let check = document.createElement("button");
+    check.textContent = task.done ? "Deshacer" : "Completar";
+    check.onclick = () => {
+      tasks[i].done = !tasks[i].done;
+      save();
+    };
+    let del = document.createElement("button");
+    del.textContent = "Eliminar";
+    del.onclick = () => {
+      tasks.splice(i, 1);
+      save();
+    };
+    li.append(check, del);
+    document.getElementById("tasks").append(li);
+  });
+}
+
+render();
+</script>
+
+</body>
+</html>
