@@ -1,0 +1,51 @@
+name: Build Mi Organizador Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: native-app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: native-app/package-lock.json
+      - name: Install dependencies
+        run: npm install
+      - name: Build web bundle
+        run: npm run build
+      - name: Add Android platform
+        run: npx cap add android
+      - name: Add Android notification permissions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('android/app/src/main/AndroidManifest.xml')
+          s = p.read_text()
+          marker = '<application'
+          permissions = '    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />\\n    '
+          if 'android.permission.POST_NOTIFICATIONS' not in s:
+              s = s.replace(marker, permissions + marker, 1)
+          p.write_text(s)
+          PY
+      - name: Sync Capacitor
+        run: npx cap sync android
+      - name: Build debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mi-organizador-android-debug
+          path: native-app/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
