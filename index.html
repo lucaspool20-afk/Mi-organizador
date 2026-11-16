@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mi Organizador</title>
 <style>
 body {
@@ -11,53 +11,106 @@ body {
   background: #101827;
   color: white;
   margin: 0;
-  padding: 25px;
+  padding: 22px;
 }
 h1 { color: #60a5fa; }
 .card {
   background: #1e293b;
-  padding: 20px;
+  padding: 18px;
   border-radius: 15px;
-  margin-top: 20px;
+  margin: 18px 0;
 }
-input, button {
+input, select, button {
+  box-sizing: border-box;
   padding: 12px;
+  border: 0;
   border-radius: 8px;
-  border: none;
-  margin-top: 8px;
+  margin: 5px 0;
 }
-input { width: 65%; }
+input, select {
+  background: #334155;
+  color: white;
+  width: 100%;
+}
 button {
   background: #3b82f6;
   color: white;
-  cursor: pointer;
+  font-weight: bold;
 }
-li {
-  padding: 12px 0;
-  border-bottom: 1px solid #475569;
+.task {
+  background: #334155;
+  padding: 12px;
+  border-radius: 10px;
+  margin: 10px 0;
 }
-.done { text-decoration: line-through; opacity: .5; }
+.task small {
+  display: block;
+  color: #cbd5e1;
+  margin: 7px 0;
+}
+.done { opacity: .5; }
+.done .taskname { text-decoration: line-through; }
+.high { color: #f87171; }
+.medium { color: #fbbf24; }
+.low { color: #4ade80; }
+.actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.actions button { flex: 1; }
+.delete { background: #b91c1c; }
+.complete { background: #15803d; }
+#count { color: #93c5fd; }
 </style>
 </head>
 <body>
 
-<h1>Mi Organizador</h1>
+<h1>Mi Organizador 📅</h1>
 <p>Un paso a la vez. Cada día cuenta.</p>
 
 <div class="card">
-  <h2>Mis tareas</h2>
-  <input id="task" placeholder="Escribí una tarea">
-  <button onclick="addTask()">Agregar</button>
-  <ul id="tasks"></ul>
+  <h2>➕ Nueva tarea</h2>
+
+  <input id="task" placeholder="¿Qué tenés que hacer?">
+
+  <label>Fecha de vencimiento</label>
+  <input type="date" id="date">
+
+  <label>Prioridad</label>
+  <select id="priority">
+    <option value="low">Baja</option>
+    <option value="medium" selected>Media</option>
+    <option value="high">Alta</option>
+  </select>
+
+  <button onclick="addTask()">Agregar tarea</button>
 </div>
 
 <div class="card">
-  <h2>Mi objetivo</h2>
+  <h2>📋 Mis actividades</h2>
+  <p id="count"></p>
+  <div id="tasks"></div>
+</div>
+
+<div class="card">
+  <h2>📅 Próximas actividades</h2>
+  <div id="upcoming"></div>
+</div>
+
+<div class="card">
+  <h2>🎯 Mi objetivo</h2>
   <p>Organizarme y avanzar cada día.</p>
 </div>
 
 <script>
 let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+tasks = tasks.map(t =>
+  typeof t === "string"
+    ? {text:t, done:false, date:"", priority:"medium"}
+    : {...t, date:t.date || "", priority:t.priority || "medium"}
+);
 
 function save() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -65,34 +118,102 @@ function save() {
 }
 
 function addTask() {
-  let input = document.getElementById("task");
-  if (!input.value.trim()) return;
-  tasks.push({text: input.value, done: false});
+  const input = document.getElementById("task");
+  if (!input.value.trim()) {
+    alert("Escribí una tarea primero");
+    return;
+  }
+
+  tasks.push({
+    text: input.value.trim(),
+    date: document.getElementById("date").value,
+    priority: document.getElementById("priority").value,
+    done: false
+  });
+
   input.value = "";
+  document.getElementById("date").value = "";
+  document.getElementById("priority").value = "medium";
   save();
 }
 
 function render() {
-  document.getElementById("tasks").innerHTML = "";
-  tasks.forEach((task, i) => {
-    let li = document.createElement("li");
-    li.className = task.done ? "done" : "";
-    li.textContent = task.text + " ";
-    let check = document.createElement("button");
+  const container = document.getElementById("tasks");
+  const upcoming = document.getElementById("upcoming");
+  container.replaceChildren();
+  upcoming.replaceChildren();
+
+  const today = new Date().toLocaleDateString("en-CA");
+  const pending = tasks.filter(t => !t.done).length;
+  document.getElementById("count").textContent =
+    pending + " pendientes · " + (tasks.length-pending) + " completadas";
+
+  const sorted = [...tasks].sort((a,b) => {
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    return a.date.localeCompare(b.date);
+  });
+
+  sorted.forEach(task => {
+    const index = tasks.indexOf(task);
+    const div = document.createElement("div");
+    div.className = "task" + (task.done ? " done" : "");
+
+    const name = document.createElement("strong");
+    name.className = "taskname";
+    name.textContent = task.text;
+
+    const info = document.createElement("small");
+    const dateText = task.date
+      ? new Date(task.date + "T12:00:00").toLocaleDateString("es-AR")
+      : "Sin fecha";
+    info.textContent = "📅 " + dateText + " · Prioridad: " +
+      ({high:"Alta",medium:"Media",low:"Baja"}[task.priority] || "Media");
+
+    if (!task.done && task.date && task.date < today) {
+      info.textContent += " · VENCIDA";
+      info.className = "high";
+    } else {
+      info.className = task.priority;
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const check = document.createElement("button");
+    check.className = "complete";
     check.textContent = task.done ? "Deshacer" : "Completar";
     check.onclick = () => {
-      tasks[i].done = !tasks[i].done;
+      tasks[index].done = !tasks[index].done;
       save();
     };
-    let del = document.createElement("button");
+
+    const del = document.createElement("button");
+    del.className = "delete";
     del.textContent = "Eliminar";
     del.onclick = () => {
-      tasks.splice(i, 1);
-      save();
+      if (confirm("¿Eliminar esta tarea?")) {
+        tasks.splice(index, 1);
+        save();
+      }
     };
-    li.append(check, del);
-    document.getElementById("tasks").append(li);
+
+    actions.append(check, del);
+    div.append(name, info, actions);
+    container.append(div);
   });
+
+  const next = sorted.filter(t => !t.done && t.date);
+  if (next.length === 0) {
+    upcoming.textContent = "No tenés actividades con fecha pendientes.";
+  } else {
+    next.slice(0,5).forEach(t => {
+      const p = document.createElement("p");
+      p.textContent = "📌 " + t.text + " — " +
+        new Date(t.date + "T12:00:00").toLocaleDateString("es-AR");
+      upcoming.append(p);
+    });
+  }
 }
 
 render();
