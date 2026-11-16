@@ -28,7 +28,6 @@ async function prepareNotifications() {
       description: 'Avisos de fecha y hora de Mi Organizador',
       importance: 5,
       visibility: 1,
-      sound: 'default'
     });
     if (ready) await syncNotifications();
   } catch (error) {
