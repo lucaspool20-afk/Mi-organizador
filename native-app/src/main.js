@@ -1,27 +1,32 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor } from '@capacitor/core';
 
+const status = document.getElementById('notificationStatus');
 const isNative = Capacitor.isNativePlatform();
-const status = document.createElement('p');
-status.id = 'notificationStatus';
-status.style.cssText = 'font-size:13px;color:#93c5fd;margin-top:8px;';
-const formCard = document.querySelector('.card');
-if (formCard) formCard.append(status);
-
 let ready = false;
 let syncing = false;
 
+function show(message) {
+  if (status) status.textContent = message;
+}
+
 async function prepareNotifications() {
   if (!isNative) {
-    status.textContent = 'Los avisos programados estarán disponibles en la aplicación Android.';
+    show('La aplicación no está ejecutándose como APK Android. Instalá la versión Android actualizada.');
     return;
   }
+  show('Aplicación Android detectada. Comprobando permisos...');
   try {
     let permission = await LocalNotifications.checkPermissions();
-    if (permission.display !== 'granted') permission = await LocalNotifications.requestPermissions();
+    if (permission.display !== 'granted') {
+      show('Solicitando permiso para mostrar notificaciones...');
+      permission = await LocalNotifications.requestPermissions();
+    }
     ready = permission.display === 'granted';
-    if (!ready) status.textContent = 'Activá los permisos de notificación de Android para recibir avisos.';
-    else status.textContent = 'Notificaciones activas: avisaremos en la fecha y hora de cada tarea.';
+    if (!ready) {
+      show('Permiso denegado. Activá Notificaciones en Ajustes > Aplicaciones > Mi Organizador.');
+      return;
+    }
     await LocalNotifications.createChannel({
       id: 'organizador-recordatorios',
       name: 'Recordatorios de tareas',
@@ -29,23 +34,22 @@ async function prepareNotifications() {
       importance: 5,
       visibility: 1,
     });
-    if (ready) await syncNotifications();
+    show('Permiso concedido. Preparando avisos...');
+    await syncNotifications();
   } catch (error) {
-    console.error('No se pudieron preparar las notificaciones', error);
-    status.textContent = 'No pudimos activar las notificaciones. Revisá los permisos de la aplicación.';
+    console.error('Error al iniciar notificaciones:', error);
+    show('Error al iniciar notificaciones: ' + (error?.message || String(error)));
   }
 }
 
 function notificationId(task, index) {
-  // Identificador positivo y estable para la tarea mientras conserva su posición.
-  return index + 1000;
+  return 1000 + index;
 }
 
 async function syncNotifications() {
   if (!isNative || !ready || syncing) return;
   syncing = true;
   try {
-    await LocalNotifications.cancelAll();
     const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
     const now = Date.now();
     const notifications = [];
@@ -62,33 +66,31 @@ async function syncNotifications() {
         schedule: { at, allowWhileIdle: true },
         channelId: 'organizador-recordatorios',
         smallIcon: 'ic_launcher',
-        extra: { taskText: task.text || '' }
       });
     });
+    await LocalNotifications.cancelAll();
     if (notifications.length) await LocalNotifications.schedule({ notifications });
-    status.textContent = ready
-      ? `Avisos programados: ${notifications.length} tarea(s) con fecha y hora.`
-      : status.textContent;
+    show('Notificaciones activas. Avisos programados: ' + notifications.length + '.');
   } catch (error) {
-    console.error('Error programando avisos', error);
-    status.textContent = 'No se pudieron programar algunos avisos.';
+    console.error('Error programando avisos:', error);
+    show('Error al programar avisos: ' + (error?.message || String(error)));
   } finally {
     syncing = false;
   }
 }
 
 function connectTaskChanges() {
-  if (typeof window.save === 'function') {
-    const originalSave = window.save;
-    window.save = function (...args) {
-      const result = originalSave.apply(this, args);
-      syncNotifications();
-      return result;
-    };
+  if (typeof window.save !== 'function') {
+    show('Android detectado, pero no se encontró la función de guardado de tareas.');
+    return;
   }
+  const originalSave = window.save;
+  window.save = function (...args) {
+    const result = originalSave.apply(this, args);
+    syncNotifications();
+    return result;
+  };
 }
 
-window.addEventListener('load', () => {
-  connectTaskChanges();
-  prepareNotifications();
-});
+connectTaskChanges();
+prepareNotifications();
