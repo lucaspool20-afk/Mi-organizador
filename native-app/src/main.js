@@ -68,8 +68,16 @@ async function syncNotifications() {
         smallIcon: 'ic_launcher',
       });
     });
-    await LocalNotifications.cancelAll();
-    if (notifications.length) await LocalNotifications.schedule({ notifications });
+    // Android no implementa cancelAll() en algunas versiones del plugin.
+    // Cancelamos solamente los avisos que programó esta aplicación.
+    const previousIds = JSON.parse(localStorage.getItem('organizadorNotificationIds') || '[]');
+    if (previousIds.length) {
+      await LocalNotifications.cancel({ notifications: previousIds.map(id => ({ id })) });
+    }
+    if (notifications.length) {
+      await LocalNotifications.schedule({ notifications });
+    }
+    localStorage.setItem('organizadorNotificationIds', JSON.stringify(notifications.map(item => item.id)));
     show('Notificaciones activas. Avisos programados: ' + notifications.length + '.');
   } catch (error) {
     console.error('Error programando avisos:', error);
