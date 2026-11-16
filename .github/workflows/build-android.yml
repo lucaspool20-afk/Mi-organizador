@@ -10,8 +10,10 @@ jobs:
       run:
         working-directory: native-app
     steps:
-      - name: Checkout
+      - name: Checkout Android source branch
         uses: actions/checkout@v4
+        with:
+          ref: native-notifications
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
