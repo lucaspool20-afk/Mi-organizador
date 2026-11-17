@@ -7,6 +7,7 @@ const CHANNEL_ID = 'organizador-recordatorios-v2';
 const FIRST_TASK_NOTIFICATION_ID = 1000;
 const LAST_TASK_NOTIFICATION_ID = 900000;
 let ready = false;
+let initializing = false;
 let syncing = false;
 let syncAgain = false;
 
@@ -65,10 +66,12 @@ async function testNotificationNow() {
 window.testNotificationNow = testNotificationNow;
 
 async function prepareNotifications() {
+  if (initializing) return;
   if (!isNative) {
     show('La aplicación no se está ejecutando como APK Android. Instalá la versión Android actualizada.');
     return;
   }
+  initializing = true;
   addTestButton();
   show('Android detectado. Comprobando permisos...');
   try {
@@ -105,6 +108,8 @@ async function prepareNotifications() {
   } catch (error) {
     console.error('Error al iniciar notificaciones:', error);
     show('Error al iniciar notificaciones: ' + (error?.message || String(error)));
+  } finally {
+    initializing = false;
   }
 }
 
@@ -207,13 +212,23 @@ function connectTaskChanges() {
   };
 }
 
-// Si Android devuelve la app al primer plano, comprobamos y reconstruimos
-// los avisos pendientes a partir de las tareas guardadas.
+// Al volver desde Ajustes de Android, volvemos a consultar los permisos.
+// Esto permite continuar sin cerrar ni reinstalar la aplicación.
+async function handleAppResume() {
+  if (!isNative) return;
+  if (!ready) {
+    await prepareNotifications();
+    return;
+  }
+  await syncNotifications();
+  await showDiagnostics('Verificación al volver');
+}
+
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') syncNotifications();
+  if (document.visibilityState === 'visible') handleAppResume();
 });
-window.addEventListener('pageshow', () => syncNotifications());
-window.addEventListener('focus', () => syncNotifications());
+window.addEventListener('pageshow', handleAppResume);
+window.addEventListener('focus', handleAppResume);
 
 connectTaskChanges();
 prepareNotifications();
