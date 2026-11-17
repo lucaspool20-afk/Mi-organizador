@@ -282,6 +282,51 @@ function addTask() {
   save();
 }
 
+
+function editTask(index) {
+  const task = tasks[index];
+  if (!task) return;
+  const text = prompt("Descripción de la tarea:", task.text || "");
+  if (text === null) return;
+  if (!text.trim()) {
+    alert("La descripción no puede quedar vacía.");
+    return;
+  }
+  const date = prompt("Fecha (AAAA-MM-DD). Dejá vacío si no tiene fecha:", task.date || "");
+  if (date === null) return;
+  if (date && !/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) {
+    alert("La fecha debe tener el formato AAAA-MM-DD.");
+    return;
+  }
+  const time = prompt("Hora (HH:MM). Dejá vacío si no tiene hora:", task.time || "");
+  if (time === null) return;
+  if (time && !/^([01]\\d|2[0-3]):[0-5]\\d$/.test(time)) {
+    alert("La hora debe tener el formato HH:MM.");
+    return;
+  }
+  const categoryNames = {trabajo:"Trabajo",personal:"Personal",estudio:"Estudio",finanzas:"Finanzas",salud:"Salud",hogar:"Hogar",otros:"Otros"};
+  const category = prompt("Categoría: trabajo, personal, estudio, finanzas, salud, hogar u otros:", task.category || "personal");
+  if (category === null) return;
+  const normalizedCategory = category.trim().toLowerCase();
+  if (!Object.prototype.hasOwnProperty.call(categoryNames, normalizedCategory)) {
+    alert("Esa categoría no existe.");
+    return;
+  }
+  const priority = prompt("Prioridad: high (alta), medium (media) o low (baja):", task.priority || "medium");
+  if (priority === null) return;
+  const normalizedPriority = priority.trim().toLowerCase();
+  if (!["high","medium","low"].includes(normalizedPriority)) {
+    alert("La prioridad debe ser high, medium o low.");
+    return;
+  }
+  task.text = text.trim();
+  task.date = date.trim();
+  task.time = time.trim();
+  task.category = normalizedCategory;
+  task.priority = normalizedPriority;
+  save();
+}
+
 function render() {
   const container = document.getElementById("tasks");
   const upcoming = document.getElementById("upcoming");
@@ -374,6 +419,11 @@ function render() {
       save();
     };
 
+    const edit = document.createElement("button");
+    edit.textContent = "Editar";
+    edit.style.background = "#475569";
+    edit.onclick = () => editTask(index);
+
     const del = document.createElement("button");
     del.className = "delete";
     del.textContent = "Eliminar";
@@ -384,7 +434,7 @@ function render() {
       }
     };
 
-    actions.append(check, del);
+    actions.append(check, edit, del);
     div.append(name, meta, info, actions);
     container.append(div);
   });
