@@ -109,6 +109,39 @@ button:active{transform:scale(.98)}
 .actions button{font-size:13px}
 @media(max-width:380px){body{padding:12px}.dashboard{gap:6px}.stat{padding:10px 7px}.stat strong{font-size:21px}.card{padding:14px}}
 
+
+/* Tema anime: energía Saiyajin */
+body{background:radial-gradient(ellipse at 85% 0%,rgba(249,115,22,.22),transparent 32%),radial-gradient(ellipse at 0% 25%,rgba(37,99,235,.2),transparent 34%),linear-gradient(180deg,#090d1c 0%,#111827 48%,#0b1220 100%);color:#fff}
+h1{color:#ffb347;text-shadow:0 0 18px rgba(249,115,22,.35);font-weight:900;letter-spacing:.2px}
+.card{background:linear-gradient(145deg,rgba(30,41,59,.96),rgba(15,23,42,.96));border:1px solid rgba(251,146,60,.24);box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.035)}
+.card h2{color:#ffd08a}
+button{background:linear-gradient(135deg,#f97316,#ea580c);box-shadow:0 4px 12px rgba(234,88,12,.18)}
+.primary{background:linear-gradient(135deg,#f97316,#ea580c)}
+input,select{background:#202d43;border:1px solid #475569}
+.task{background:linear-gradient(110deg,#26364c,#1d2a40);border-color:rgba(96,165,250,.22)}
+.stat{background:linear-gradient(145deg,#1e3352,#17263c);border-color:rgba(96,165,250,.3)}
+.stat strong{color:#ffbd69;text-shadow:0 0 12px rgba(249,115,22,.22)}
+.progress-fill{background:linear-gradient(90deg,#f97316,#facc15)}
+.calendar-day{background:#26364c}
+.calendar-day.selected{background:linear-gradient(135deg,#ea580c,#b45309);outline:2px solid #fbbf24}
+.calendar-day.today{border:1px solid #fbbf24}
+.calendar-weekday{color:#ffbd69}
+.tag{background:#9a3412;color:#ffedd5}
+.tag.category{background:#1e40af;color:#dbeafe}
+.complete{background:linear-gradient(135deg,#15803d,#166534)}
+.delete{background:linear-gradient(135deg,#b91c1c,#991b1b)}
+.edit-theme{background:#334155!important}
+.anime-hero{position:relative;overflow:hidden;min-height:154px;margin:12px 0 16px;padding:19px;border-radius:20px;border:1px solid rgba(251,191,36,.4);background:radial-gradient(circle at 82% 48%,rgba(250,204,21,.22),transparent 24%),linear-gradient(115deg,#172554 0%,#1e3a8a 48%,#7c2d12 100%);box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.anime-hero:before,.anime-hero:after{content:"";position:absolute;pointer-events:none;border-radius:50%;filter:blur(1px)}
+.anime-hero:before{width:170px;height:170px;right:12px;top:-30px;border:2px solid rgba(251,191,36,.55);box-shadow:0 0 22px rgba(250,204,21,.45),inset 0 0 22px rgba(249,115,22,.25)}
+.anime-hero:after{width:115px;height:115px;right:39px;top:-3px;background:radial-gradient(circle at 35% 30%,#fff7ae 0 3%,#facc15 4% 18%,#f97316 55%,#9a3412 100%);box-shadow:0 0 34px rgba(251,146,60,.7)}
+.anime-hero-content{position:relative;z-index:1;max-width:68%;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+.anime-kicker{font-size:10px;font-weight:900;letter-spacing:2px;color:#fde68a}
+.anime-hero h2{font-size:23px;line-height:1.08;margin:8px 0;color:white;font-weight:900}
+.anime-hero p{font-size:12px;line-height:1.45;color:#dbeafe;margin:0}
+.anime-chip{display:inline-block;margin-top:12px;padding:5px 9px;border-radius:20px;background:rgba(15,23,42,.55);border:1px solid rgba(253,230,138,.5);font-size:10px;color:#fde68a;font-weight:800;letter-spacing:.8px}
+@media(max-width:380px){.anime-hero{padding:15px;min-height:145px}.anime-hero:before{right:-18px}.anime-hero:after{right:9px}.anime-hero-content{max-width:72%}.anime-hero h2{font-size:20px}}
+
 </style>
 <script>
 if ("serviceWorker" in navigator) {
@@ -121,7 +154,15 @@ if ("serviceWorker" in navigator) {
 </head>
 <body>
 
-<h1>Mi Organizador 📅</h1>
+<div class="anime-hero" aria-label="Tema anime inspirado en Dragon Ball">
+  <div class="anime-hero-content">
+    <div class="anime-kicker">MODO SAIYAJIN · NIVEL 1</div>
+    <h2>¡Superá tus límites!</h2>
+    <p>Cada tarea completada es un nuevo nivel. Tu entrenamiento empieza hoy.</p>
+    <span class="anime-chip">PODER · DISCIPLINA · CONSTANCIA</span>
+  </div>
+</div>
+<h1>Mi Organizador ⚡</h1>
 <p id="notificationStatus" style="font-size:13px;color:#93c5fd;background:#1e293b;padding:10px;border-radius:8px;">Comprobando el sistema de notificaciones...</p>
 <p>Un paso a la vez. Cada día cuenta.</p>
 
@@ -131,14 +172,14 @@ if ("serviceWorker" in navigator) {
   <div class="stat"><strong id="statDone">0</strong><span>COMPLETADAS</span></div>
 </div>
 <div class="card">
-  <h2>📈 Tu progreso</h2>
+  <h2>🔥 Tu progreso</h2>
   <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
   <small id="progressText" style="color:#cbd5e1">Todavía no hay tareas registradas.</small>
 </div>
 
 
 <div class="card">
-  <h2>➕ Nueva tarea</h2>
+  <h2>⚡ Nueva misión</h2>
 
   <input id="task" placeholder="¿Qué tenés que hacer?">
 
@@ -170,7 +211,7 @@ if ("serviceWorker" in navigator) {
 </div>
 
 <div class="card">
-  <h2>🗓️ Calendario mensual</h2>
+  <h2>🌟 Calendario de entrenamiento</h2>
   <div class="calendar-head">
     <button type="button" onclick="changeMonth(-1)" aria-label="Mes anterior">‹</button>
     <strong id="calendarMonth"></strong>
@@ -181,7 +222,7 @@ if ("serviceWorker" in navigator) {
 </div>
 
 <div class="card">
-  <h2>📋 Mis actividades</h2>
+  <h2>🥋 Mis misiones</h2>
   <p id="count"></p>
   <div class="filters">
     <input id="searchTasks" type="search" placeholder="🔎 Buscar una tarea..." aria-label="Buscar tareas">
@@ -199,12 +240,12 @@ if ("serviceWorker" in navigator) {
 </div>
 
 <div class="card">
-  <h2>📅 Próximas actividades</h2>
+  <h2>🚀 Próximas misiones</h2>
   <div id="upcoming"></div>
 </div>
 
 <div class="card">
-  <h2>🎯 Mi objetivo</h2>
+  <h2>🐉 Mi objetivo</h2>
   <p>Organizarme y avanzar cada día.</p>
 </div>
 
