@@ -245,6 +245,16 @@ if ("serviceWorker" in navigator) {
 </div>
 
 <div class="card">
+  <h2>💾 Respaldo de mis tareas</h2>
+  <p>Guardá una copia de tus tareas antes de actualizar la aplicación. También podés restaurarla después.</p>
+  <button type="button" onclick="exportBackup()">Exportar respaldo</button>
+  <label for="backupFile">Restaurar desde un archivo de respaldo</label>
+  <input id="backupFile" type="file" accept="application/json,.json">
+  <button type="button" onclick="importBackup()">Restaurar respaldo</button>
+  <small>El respaldo incluye tus tareas, fechas, horarios, categorías y estados.</small>
+</div>
+
+<div class="card">
   <h2>🐉 Mi objetivo</h2>
   <p>Organizarme y avanzar cada día.</p>
 </div>
@@ -290,6 +300,37 @@ function renderCalendar() {
   const dayTasks=tasks.filter(t=>t.date===selectedCalendarDate).sort((a,b)=>(a.time||"").localeCompare(b.time||""));
   if(!dayTasks.length){const p=document.createElement("p");p.textContent="No hay tareas para este día. Podés elegirlo para una nueva tarea.";selected.append(p);}
   dayTasks.forEach(t=>{const p=document.createElement("div");p.className="calendar-task";p.textContent=(t.done?"✓ ":"• ")+(t.time?t.time+" · ":"")+t.text+(t.done?" (completada)":"");selected.append(p);});
+}
+
+function exportBackup() {
+  const payload = {app:"Mi Organizador", version:1, exportedAt:new Date().toISOString(), tasks};
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "mi-organizador-respaldo-" + localDateKey(new Date()) + ".json";
+  document.body.append(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  alert("Respaldo descargado. Guardalo en un lugar seguro.");
+}
+async function importBackup() {
+  const file = document.getElementById("backupFile").files[0];
+  if (!file) { alert("Elegí primero un archivo de respaldo."); return; }
+  try {
+    const data = JSON.parse(await file.text());
+    const imported = Array.isArray(data) ? data : data.tasks;
+    if (!Array.isArray(imported) || !imported.every(t => t && typeof t === "object" && typeof t.text === "string")) {
+      throw new Error("Formato inválido");
+    }
+    if (!confirm("Se reemplazarán las tareas actuales por las del respaldo (" + imported.length + "). ¿Continuar?")) return;
+    tasks = imported.map(t => ({...t, date:t.date || "", time:t.time || "", priority:t.priority || "medium", category:t.category || "personal", done:!!t.done}));
+    save();
+    alert("Respaldo restaurado correctamente.");
+  } catch (e) {
+    alert("No se pudo restaurar: el archivo no parece ser un respaldo válido de Mi Organizador.");
+  }
 }
 
 function save() {
