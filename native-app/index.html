@@ -145,6 +145,50 @@ input,select{background:#202d43;border:1px solid #475569}
 .anime-chip{display:inline-block;margin-top:12px;padding:5px 9px;border-radius:20px;background:rgba(15,23,42,.55);border:1px solid rgba(253,230,138,.5);font-size:10px;color:#fde68a;font-weight:800;letter-spacing:.8px}
 @media(max-width:380px){.anime-hero{padding:15px;min-height:145px}.anime-hero:before{right:-18px}.anime-hero:after{right:9px}.anime-hero-content{max-width:72%}.anime-hero h2{font-size:20px}}
 
+
+/* Interfaz inspirada en la referencia Dragon Ball: azul eléctrico */
+:root{color-scheme:dark}
+body{max-width:620px;padding:12px 12px 100px;background:radial-gradient(ellipse at 50% 0%,#123b91 0%,#071735 38%,#030b1d 100%);font-family:system-ui,-apple-system,Arial,sans-serif}
+h1{font-size:27px;color:#fff;text-align:center;text-shadow:0 2px 12px #168bff;margin:8px 0}
+body>p{color:#c9e5ff;text-align:center}
+.anime-hero{min-height:300px;margin:-12px -12px 14px;padding:18px 16px;border:0;border-radius:0 0 26px 26px;background:linear-gradient(90deg,rgba(2,10,34,.94) 0%,rgba(4,20,58,.5) 48%,rgba(2,10,34,.05) 100%),url('./assets/vegeta-organizador.jpg') center 28%/cover no-repeat;box-shadow:0 8px 30px #006cff66;display:flex;align-items:flex-end}
+.anime-hero:before,.anime-hero:after{display:none}
+.anime-vegeta{display:none}
+.anime-hero-content{max-width:68%;padding:14px 12px;border-radius:16px;background:linear-gradient(90deg,rgba(1,10,34,.86),rgba(1,10,34,.12));text-shadow:0 2px 8px #000}
+.anime-kicker{color:#8bd5ff;font-size:11px;letter-spacing:2px}
+.anime-hero h2{font-size:29px;color:#fff;text-shadow:0 0 14px #168bff}
+.anime-hero p{font-size:13px;color:#e0f2ff}
+.anime-chip{background:#06265b;border:1px solid #38bdf8;color:#dff5ff}
+#notificationStatus{margin:8px 0!important;background:#082451!important;border:1px solid #1d70dc;color:#b9e4ff!important;text-align:center}
+.dashboard{gap:8px;margin:12px 0}
+.stat{background:linear-gradient(145deg,#073b91,#061b49);border:1px solid #168bff;box-shadow:inset 0 0 16px #168bff33,0 5px 16px #0008;text-align:center;padding:13px 6px}
+.stat strong{color:#fff;text-shadow:0 0 12px #38bdf8;font-size:27px}
+.stat span{color:#cceaff;font-size:10px;font-weight:800}
+.card{background:linear-gradient(145deg,rgba(5,29,76,.96),rgba(3,15,43,.97));border:1px solid #168bff;box-shadow:0 6px 22px #0008,inset 0 0 14px #168bff24;border-radius:20px}
+.card h2{color:#e6f5ff;font-size:19px}
+.card:nth-of-type(4){border-color:#facc15}
+button{background:linear-gradient(135deg,#168bff,#0647b8);border:1px solid #6bcaff;box-shadow:0 4px 14px #0077ff55;color:white}
+.primary{background:linear-gradient(135deg,#168bff,#0647b8)}
+input,select{background:#071d45;border:1px solid #267bd9;color:#fff}
+.task{background:linear-gradient(110deg,#0c3475,#071b43);border:1px solid #2468bd}
+.stat strong{color:#fff}
+.progress-track{height:11px;background:#092653;border:1px solid #1b66b8}
+.progress-fill{background:linear-gradient(90deg,#0ea5e9,#38bdf8,#facc15)}
+.calendar-day{background:#0b2c65;border:1px solid #174f9e}
+.calendar-day.selected{background:#075be0;outline:2px solid #63caff}
+.calendar-day.today{border:1px solid #facc15}
+.calendar-weekday{color:#8bd5ff}
+.tag{background:#0752b5;color:#e6f5ff}
+.tag.category{background:#153d75;color:#dbeafe}
+.complete{background:linear-gradient(135deg,#16a34a,#166534)}
+.delete{background:linear-gradient(135deg,#dc2626,#991b1b)}
+.bottom-nav{position:fixed;z-index:50;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);max-width:620px;margin:0 auto;padding:8px 5px calc(8px + env(safe-area-inset-bottom));background:rgba(2,12,35,.97);border-top:1px solid #168bff;box-shadow:0 -8px 25px #0009;backdrop-filter:blur(12px)}
+.bottom-nav a{color:#b9dfff;text-decoration:none;text-align:center;font-size:11px;font-weight:700;padding:5px 2px;display:flex;flex-direction:column;gap:3px;align-items:center}
+.bottom-nav a span{font-size:22px;line-height:1.2}
+.bottom-nav a.active{color:#55caff;text-shadow:0 0 12px #168bff}
+.section-anchor{scroll-margin-top:12px}
+@media(max-width:380px){.anime-hero{min-height:270px}.anime-hero-content{max-width:75%}.anime-hero h2{font-size:24px}body{padding-left:10px;padding-right:10px}}
+
 </style>
 <script>
 if ("serviceWorker" in navigator) {
@@ -158,7 +202,7 @@ if ("serviceWorker" in navigator) {
 <body>
 
 <div class="anime-hero" aria-label="Tema anime con Vegeta">
-  <img class="anime-vegeta" src="./assets/vegeta.svg" alt="Ilustración de Vegeta" />
+  <img class="anime-vegeta" src="./assets/vegeta-organizador.jpg" alt="Vegeta" />
   <div class="anime-hero-content">
     <div class="anime-kicker">MODO SAIYAJIN · NIVEL 1</div>
     <h2>¡Superá tus límites!</h2>
@@ -166,14 +210,15 @@ if ("serviceWorker" in navigator) {
     <span class="anime-chip">PODER · DISCIPLINA · CONSTANCIA</span>
   </div>
 </div>
-<h1>Mi Organizador ⚡</h1>
+<h1>Mi Organizador</h1>
 <p id="notificationStatus" style="font-size:13px;color:#93c5fd;background:#1e293b;padding:10px;border-radius:8px;">Comprobando el sistema de notificaciones...</p>
 <p>Un paso a la vez. Cada día cuenta.</p>
 
-<div class="dashboard" aria-label="Resumen de tareas">
+<div class="card section-anchor" id="inicio"><h2>📅 Resumen de hoy</h2><div style="color:#b9dfff;font-size:13px" id="todayLabel"></div><div class="dashboard" aria-label="Resumen de tareas">
   <div class="stat"><strong id="statPending">0</strong><span>PENDIENTES</span></div>
   <div class="stat"><strong id="statOverdue">0</strong><span>VENCIDAS</span></div>
   <div class="stat"><strong id="statDone">0</strong><span>COMPLETADAS</span></div>
+</div>
 </div>
 <div class="card">
   <h2>🔥 Tu progreso</h2>
@@ -182,7 +227,7 @@ if ("serviceWorker" in navigator) {
 </div>
 
 
-<div class="card">
+<div class="card section-anchor" id="metas">
   <h2>⚡ Nueva misión</h2>
 
   <input id="task" placeholder="¿Qué tenés que hacer?">
@@ -214,8 +259,8 @@ if ("serviceWorker" in navigator) {
   <button onclick="addTask()">Agregar tarea</button>
 </div>
 
-<div class="card">
-  <h2>🌟 Calendario de entrenamiento</h2>
+<div class="card section-anchor" id="calendario">
+  <h2>🌟 Mi calendario</h2>
   <div class="calendar-head">
     <button type="button" onclick="changeMonth(-1)" aria-label="Mes anterior">‹</button>
     <strong id="calendarMonth"></strong>
@@ -225,8 +270,8 @@ if ("serviceWorker" in navigator) {
   <div id="calendarSelected"></div>
 </div>
 
-<div class="card">
-  <h2>🥋 Mis misiones</h2>
+<div class="card section-anchor" id="tareas">
+  <h2>🥋 Mis tareas</h2>
   <p id="count"></p>
   <div class="filters">
     <input id="searchTasks" type="search" placeholder="🔎 Buscar una tarea..." aria-label="Buscar tareas">
@@ -248,7 +293,7 @@ if ("serviceWorker" in navigator) {
   <div id="upcoming"></div>
 </div>
 
-<div class="card">
+<div class="card section-anchor" id="estadisticas">
   <h2>💾 Respaldo de mis tareas</h2>
   <p>Guardá una copia de tus tareas antes de actualizar la aplicación. También podés restaurarla después.</p>
   <button type="button" onclick="exportBackup()">Exportar respaldo</button>
@@ -258,12 +303,15 @@ if ("serviceWorker" in navigator) {
   <small>El respaldo incluye tus tareas, fechas, horarios, categorías y estados.</small>
 </div>
 
-<div class="card">
+<div class="card section-anchor" id="acerca">
   <h2>🐉 Mi objetivo</h2>
   <p>Organizarme y avanzar cada día.</p>
 </div>
 
+<nav class="bottom-nav" aria-label="Navegación principal"><a class="active" href="#inicio"><span>⌂</span>Inicio</a><a href="#estadisticas"><span>▥</span>Estadísticas</a><a href="#metas"><span>🏆</span>Metas</a><a href="#acerca"><span>★</span>Acerca de</a></nav>
 <script>
+document.getElementById("todayLabel").textContent=new Date().toLocaleDateString("es-AR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+document.querySelectorAll(".bottom-nav a").forEach(a=>a.addEventListener("click",()=>{document.querySelectorAll(".bottom-nav a").forEach(x=>x.classList.remove("active"));a.classList.add("active")}));
 let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
 
 tasks = tasks.map(t =>
