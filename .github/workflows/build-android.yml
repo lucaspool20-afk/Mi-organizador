@@ -2,6 +2,9 @@ name: Build Mi Organizador Android
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - native-notifications
 
 jobs:
   build:
