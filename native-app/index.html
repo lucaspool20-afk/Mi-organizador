@@ -134,7 +134,10 @@ input,select{background:#202d43;border:1px solid #475569}
 .anime-hero{position:relative;overflow:hidden;min-height:154px;margin:12px 0 16px;padding:19px;border-radius:20px;border:1px solid rgba(251,191,36,.4);background:radial-gradient(circle at 82% 48%,rgba(250,204,21,.22),transparent 24%),linear-gradient(115deg,#172554 0%,#1e3a8a 48%,#7c2d12 100%);box-shadow:0 12px 30px rgba(0,0,0,.3)}
 .anime-hero:before,.anime-hero:after{content:"";position:absolute;pointer-events:none;border-radius:50%;filter:blur(1px)}
 .anime-hero:before{width:170px;height:170px;right:12px;top:-30px;border:2px solid rgba(251,191,36,.55);box-shadow:0 0 22px rgba(250,204,21,.45),inset 0 0 22px rgba(249,115,22,.25)}
-.anime-hero:after{width:115px;height:115px;right:39px;top:-3px;background:radial-gradient(circle at 35% 30%,#fff7ae 0 3%,#facc15 4% 18%,#f97316 55%,#9a3412 100%);box-shadow:0 0 34px rgba(251,146,60,.7)}
+.anime-hero:after{display:none}
+.anime-vegeta{position:absolute;right:0;bottom:0;width:48%;height:100%;object-fit:contain;object-position:center bottom;z-index:0;filter:drop-shadow(0 0 18px rgba(96,165,250,.7))}
+.anime-hero-content{max-width:58%}
+@media(max-width:380px){.anime-vegeta{width:46%;right:-5px}.anime-hero-content{max-width:62%}}
 .anime-hero-content{position:relative;z-index:1;max-width:68%;text-shadow:0 2px 8px rgba(0,0,0,.45)}
 .anime-kicker{font-size:10px;font-weight:900;letter-spacing:2px;color:#fde68a}
 .anime-hero h2{font-size:23px;line-height:1.08;margin:8px 0;color:white;font-weight:900}
@@ -154,7 +157,8 @@ if ("serviceWorker" in navigator) {
 </head>
 <body>
 
-<div class="anime-hero" aria-label="Tema anime inspirado en Dragon Ball">
+<div class="anime-hero" aria-label="Tema anime con Vegeta">
+  <img class="anime-vegeta" src="./assets/vegeta.svg" alt="Ilustración de Vegeta" />
   <div class="anime-hero-content">
     <div class="anime-kicker">MODO SAIYAJIN · NIVEL 1</div>
     <h2>¡Superá tus límites!</h2>
