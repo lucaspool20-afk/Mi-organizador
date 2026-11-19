@@ -340,12 +340,19 @@ if ("serviceWorker" in navigator) {
   <small>El respaldo incluye tus tareas, fechas, horarios, categorías y estados.</small>
 </div>
 
+<div class="card section-anchor" id="agentes">
+  <h2>🤖 Equipo de agentes</h2>
+  <p>Tu centro de operaciones para coordinar al gerente y los agentes especializados.</p>
+  <a href="./agent-hub.html" style="display:block;text-decoration:none"><button type="button" class="primary">Abrir Agent Hub →</button></a>
+  <small style="display:block;color:#9fcfff;margin-top:9px">Prototipo inicial: todavía sin conexión a IA ni ejecución automática.</small>
+</div>
+
 <div class="card section-anchor" id="acerca">
   <h2>🐉 Mi objetivo</h2>
   <p>Organizarme y avanzar cada día.</p>
 </div>
 
-<nav class="bottom-nav" aria-label="Navegación principal"><a class="active" href="#inicio"><span>⌂</span>Inicio</a><a href="#estadisticas"><span>▥</span>Estadísticas</a><a href="#metas"><span>🏆</span>Metas</a><a href="#acerca"><span>★</span>Acerca de</a></nav>
+<nav class="bottom-nav" aria-label="Navegación principal"><a class="active" href="#inicio"><span>⌂</span>Inicio</a><a href="#estadisticas"><span>▥</span>Estadísticas</a><a href="#metas"><span>🏆</span>Metas</a><a href="#agentes"><span>🤖</span>Agentes</a><a href="#acerca"><span>★</span>Acerca de</a></nav>
 <script>
 document.getElementById("todayLabel").textContent=new Date().toLocaleDateString("es-AR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
 document.querySelectorAll(".bottom-nav a").forEach(a=>a.addEventListener("click",()=>{document.querySelectorAll(".bottom-nav a").forEach(x=>x.classList.remove("active"));a.classList.add("active")}));
