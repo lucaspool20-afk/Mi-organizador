@@ -182,7 +182,7 @@ input,select{background:#071d45;border:1px solid #267bd9;color:#fff}
 .tag.category{background:#153d75;color:#dbeafe}
 .complete{background:linear-gradient(135deg,#16a34a,#166534)}
 .delete{background:linear-gradient(135deg,#dc2626,#991b1b)}
-.bottom-nav{position:fixed;z-index:50;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);max-width:620px;margin:0 auto;padding:8px 5px calc(8px + env(safe-area-inset-bottom));background:rgba(2,12,35,.97);border-top:1px solid #168bff;box-shadow:0 -8px 25px #0009;backdrop-filter:blur(12px)}
+.bottom-nav{position:fixed;z-index:50;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));max-width:620px;margin:0 auto;padding:8px 5px calc(8px + env(safe-area-inset-bottom));background:rgba(2,12,35,.97);border-top:1px solid #168bff;box-shadow:0 -8px 25px #0009;backdrop-filter:blur(12px)}
 .bottom-nav a{color:#b9dfff;text-decoration:none;text-align:center;font-size:11px;font-weight:700;padding:5px 2px;display:flex;flex-direction:column;gap:3px;align-items:center}
 .bottom-nav a span{font-size:22px;line-height:1.2}
 .bottom-nav a.active{color:#55caff;text-shadow:0 0 12px #168bff}
@@ -226,14 +226,6 @@ button{border-radius:12px;min-height:45px}
 @media(max-width:380px){.anime-hero{min-height:205px;padding:18px 14px}.anime-hero-content{max-width:78%}.anime-hero h2{font-size:25px}.anime-hero:before{right:8px;width:125px;height:125px}.card{padding:14px}}
 
 </style>
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js")
-      .catch(error => console.error("Error:", error));
-  });
-}
-</script>
 </head>
 <body>
 
