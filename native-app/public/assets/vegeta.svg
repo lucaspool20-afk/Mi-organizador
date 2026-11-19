@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 500">
+<defs>
+ <linearGradient id="aura" x2="0" y2="1"><stop stop-color="#60a5fa" stop-opacity=".9"/><stop offset="1" stop-color="#172554" stop-opacity="0"/></linearGradient>
+ <linearGradient id="hair" x2=".8" y2="1"><stop stop-color="#243b73"/><stop offset=".5" stop-color="#080d20"/><stop offset="1" stop-color="#020617"/></linearGradient>
+ <linearGradient id="armor" x2="1" y2="1"><stop stop-color="#f8fafc"/><stop offset=".5" stop-color="#cbd5e1"/><stop offset="1" stop-color="#64748b"/></linearGradient>
+</defs>
+<path d="M210 12 C150 45 135 75 115 125 L45 75 85 160 18 145 92 220 48 280 120 270 105 380 315 380 300 270 372 280 328 220 402 145 335 160 375 75 305 125 C285 75 270 45 210 12Z" fill="url(#aura)" opacity=".42"/>
+<path d="M85 500 Q95 390 160 360 L260 360 Q330 390 340 500Z" fill="#123a83" stroke="#60a5fa" stroke-width="5"/>
+<path d="M130 390 L170 355 210 390 250 355 290 390 270 500 150 500Z" fill="url(#armor)" stroke="#e2e8f0" stroke-width="5"/>
+<path d="M175 370 L210 410 245 370 260 500 160 500Z" fill="#1d4ed8"/>
+<path d="M138 215 Q135 120 210 95 Q285 120 282 215 L267 305 Q245 350 210 354 Q175 350 153 305Z" fill="#f1c7a3" stroke="#7c2d12" stroke-width="4"/>
+<path d="M112 220 L85 160 130 175 110 105 165 145 160 60 205 120 225 28 250 125 300 65 280 150 340 110 300 190 285 220 270 168 245 180 210 155 177 184 145 173Z" fill="url(#hair)" stroke="#0f172a" stroke-width="7" stroke-linejoin="round"/>
+<path d="M150 225 Q177 198 204 220 L190 236 151 235Z M216 220 Q246 198 270 225 L267 237 228 236Z" fill="#fff" stroke="#111827" stroke-width="5"/>
+<path d="M160 230 L194 228 M224 228 L261 230" stroke="#111827" stroke-width="8" stroke-linecap="round"/>
+<path d="M205 238 L195 272 215 275" fill="none" stroke="#9a3412" stroke-width="5" stroke-linecap="round"/>
+<path d="M177 303 Q210 318 244 301" fill="none" stroke="#7f1d1d" stroke-width="6" stroke-linecap="round"/>
+<path d="M135 352 Q210 385 285 352 L305 420 265 445 210 420 155 445 115 420Z" fill="#1e40af" stroke="#0f172a" stroke-width="6"/>
+<path d="M155 385 L210 420 265 385" fill="none" stroke="#f8fafc" stroke-width="18"/>
+<path d="M125 415 L95 500 M295 415 L325 500" stroke="#60a5fa" stroke-width="13"/>
+</svg>
