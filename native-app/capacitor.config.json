@@ -1,0 +1,12 @@
+{
+  "appId": "com.lucas.organizador",
+  "appName": "Mi Organizador",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_launcher",
+      "iconColor": "#60A5FA"
+    }
+  }
+}
