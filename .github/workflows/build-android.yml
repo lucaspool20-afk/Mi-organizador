@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Android source branch
         uses: actions/checkout@v4
         with:
-          ref: native-notifications
+          ref: agent-hub-dev
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
