@@ -1,0 +1,636 @@
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071426">
+  <link rel="manifest" href="./manifest.json">
+  <title>Mi Organizador</title>
+  <style>
+
+
+
+  body {
+  font-family: Arial, sans-serif;
+  background: #101827;
+  color: white;
+  margin: 0;
+  padding: 22px;
+}
+h1 { color: #60a5fa; }
+.card {
+  background: #1e293b;
+  padding: 18px;
+  border-radius: 15px;
+  margin: 18px 0;
+}
+input, select, button {
+  box-sizing: border-box;
+  padding: 12px;
+  border: 0;
+  border-radius: 8px;
+  margin: 5px 0;
+}
+input, select {
+  background: #334155;
+  color: white;
+  width: 100%;
+}
+label { display:block; margin-top:10px; color:#cbd5e1; }
+input[type="time"] { display:block; min-height:48px; color-scheme:dark; padding:12px; }
+button {
+  background: #3b82f6;
+  color: white;
+  font-weight: bold;
+}
+.task {
+  background: #334155;
+  padding: 12px;
+  border-radius: 10px;
+  margin: 10px 0;
+}
+.task small {
+  display: block;
+  color: #cbd5e1;
+  margin: 7px 0;
+}
+.done { opacity: .5; }
+.done .taskname { text-decoration: line-through; }
+.high { color: #f87171; }
+.medium { color: #fbbf24; }
+.low { color: #4ade80; }
+.actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.actions button { flex: 1; }
+.delete { background: #b91c1c; }
+.complete { background: #15803d; }
+#count { color: #93c5fd; }
+.calendar-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.calendar-head button { min-width:44px; }
+.calendar-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px; text-align:center; }
+.calendar-weekday { color:#93c5fd; font-size:12px; padding:6px 0; }
+.calendar-day { min-width:0; padding:10px 2px; background:#334155; border-radius:8px; color:white; }
+.calendar-day.empty { background:transparent; }
+.calendar-day.selected { outline:2px solid #60a5fa; background:#1d4ed8; }
+.calendar-day.today { border:1px solid #60a5fa; }
+.calendar-day.has-task:after { content:""; display:block; width:5px; height:5px; border-radius:50%; background:#4ade80; margin:4px auto 0; }
+#calendarSelected { margin-top:14px; }
+.calendar-task { padding:8px; margin:6px 0; background:#334155; border-radius:8px; }
+
+/* Nueva interfaz */
+body{max-width:760px;margin:0 auto;padding:18px 16px 40px;background:linear-gradient(180deg,#0b1526 0%,#101827 240px);font-family:system-ui,-apple-system,Arial,sans-serif}
+h1{font-size:29px;letter-spacing:-.7px;margin:8px 0;color:#bfdbfe}
+body>p{color:#a8bad2;margin-top:4px}
+.card{border:1px solid #334155;background:rgba(30,41,59,.92);box-shadow:0 8px 24px rgba(0,0,0,.14);padding:17px;border-radius:18px;margin:14px 0}
+.card h2{font-size:18px;margin:0 0 12px}
+input,select,button{font:inherit}
+button{cursor:pointer;min-height:42px}
+button:active{transform:scale(.98)}
+.primary{width:100%;margin-top:12px;background:#2563eb}
+.dashboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:14px 0}
+.stat{background:#17263c;border:1px solid #334155;border-radius:14px;padding:13px 10px;min-width:0}
+.stat strong{display:block;font-size:25px;color:#bfdbfe}
+.stat span{font-size:11px;color:#a9bad0}
+.progress-track{height:9px;background:#334155;border-radius:20px;overflow:hidden;margin:10px 0 4px}
+.progress-fill{height:100%;background:#22c55e;width:0%;transition:width .2s}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.filters input{grid-column:1/-1}
+.task{border:1px solid #475569;background:#26364c;padding:14px}
+.taskname{font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.task-meta{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.tag{display:inline-block;border-radius:20px;padding:4px 8px;background:#1e40af;color:#dbeafe;font-size:11px}
+.tag.category{background:#334155;color:#dbeafe}
+.empty-state{color:#9fb0c7;text-align:center;padding:18px 8px}
+.actions button{font-size:13px}
+@media(max-width:380px){body{padding:12px}.dashboard{gap:6px}.stat{padding:10px 7px}.stat strong{font-size:21px}.card{padding:14px}}
+
+
+/* Tema anime: energía Saiyajin */
+body{background:radial-gradient(ellipse at 85% 0%,rgba(249,115,22,.22),transparent 32%),radial-gradient(ellipse at 0% 25%,rgba(37,99,235,.2),transparent 34%),linear-gradient(180deg,#090d1c 0%,#111827 48%,#0b1220 100%);color:#fff}
+h1{color:#ffb347;text-shadow:0 0 18px rgba(249,115,22,.35);font-weight:900;letter-spacing:.2px}
+.card{background:linear-gradient(145deg,rgba(30,41,59,.96),rgba(15,23,42,.96));border:1px solid rgba(251,146,60,.24);box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.035)}
+.card h2{color:#ffd08a}
+button{background:linear-gradient(135deg,#f97316,#ea580c);box-shadow:0 4px 12px rgba(234,88,12,.18)}
+.primary{background:linear-gradient(135deg,#f97316,#ea580c)}
+input,select{background:#202d43;border:1px solid #475569}
+.task{background:linear-gradient(110deg,#26364c,#1d2a40);border-color:rgba(96,165,250,.22)}
+.stat{background:linear-gradient(145deg,#1e3352,#17263c);border-color:rgba(96,165,250,.3)}
+.stat strong{color:#ffbd69;text-shadow:0 0 12px rgba(249,115,22,.22)}
+.progress-fill{background:linear-gradient(90deg,#f97316,#facc15)}
+.calendar-day{background:#26364c}
+.calendar-day.selected{background:linear-gradient(135deg,#ea580c,#b45309);outline:2px solid #fbbf24}
+.calendar-day.today{border:1px solid #fbbf24}
+.calendar-weekday{color:#ffbd69}
+.tag{background:#9a3412;color:#ffedd5}
+.tag.category{background:#1e40af;color:#dbeafe}
+.complete{background:linear-gradient(135deg,#15803d,#166534)}
+.delete{background:linear-gradient(135deg,#b91c1c,#991b1b)}
+.edit-theme{background:#334155!important}
+.anime-hero{position:relative;overflow:hidden;min-height:154px;margin:12px 0 16px;padding:19px;border-radius:20px;border:1px solid rgba(251,191,36,.4);background:radial-gradient(circle at 82% 48%,rgba(250,204,21,.22),transparent 24%),linear-gradient(115deg,#172554 0%,#1e3a8a 48%,#7c2d12 100%);box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.anime-hero:before,.anime-hero:after{content:"";position:absolute;pointer-events:none;border-radius:50%;filter:blur(1px)}
+.anime-hero:before{width:170px;height:170px;right:12px;top:-30px;border:2px solid rgba(251,191,36,.55);box-shadow:0 0 22px rgba(250,204,21,.45),inset 0 0 22px rgba(249,115,22,.25)}
+.anime-hero:after{display:none}
+.anime-vegeta{position:absolute;right:0;bottom:0;width:48%;height:100%;object-fit:contain;object-position:center bottom;z-index:0;filter:drop-shadow(0 0 18px rgba(96,165,250,.7))}
+.anime-hero-content{max-width:58%}
+@media(max-width:380px){.anime-vegeta{width:46%;right:-5px}.anime-hero-content{max-width:62%}}
+.anime-hero-content{position:relative;z-index:1;max-width:68%;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+.anime-kicker{font-size:10px;font-weight:900;letter-spacing:2px;color:#fde68a}
+.anime-hero h2{font-size:23px;line-height:1.08;margin:8px 0;color:white;font-weight:900}
+.anime-hero p{font-size:12px;line-height:1.45;color:#dbeafe;margin:0}
+.anime-chip{display:inline-block;margin-top:12px;padding:5px 9px;border-radius:20px;background:rgba(15,23,42,.55);border:1px solid rgba(253,230,138,.5);font-size:10px;color:#fde68a;font-weight:800;letter-spacing:.8px}
+@media(max-width:380px){.anime-hero{padding:15px;min-height:145px}.anime-hero:before{right:-18px}.anime-hero:after{right:9px}.anime-hero-content{max-width:72%}.anime-hero h2{font-size:20px}}
+
+
+/* Interfaz inspirada en la referencia Dragon Ball: azul eléctrico */
+:root{color-scheme:dark}
+body{max-width:620px;padding:12px 12px 100px;background:radial-gradient(ellipse at 50% 0%,#123b91 0%,#071735 38%,#030b1d 100%);font-family:system-ui,-apple-system,Arial,sans-serif}
+h1{font-size:27px;color:#fff;text-align:center;text-shadow:0 2px 12px #168bff;margin:8px 0}
+body>p{color:#c9e5ff;text-align:center}
+.anime-hero{min-height:300px;margin:-12px -12px 14px;padding:18px 16px;border:0;border-radius:0 0 26px 26px;background:radial-gradient(ellipse at 78% 28%,rgba(56,189,248,.42),transparent 35%),linear-gradient(125deg,#03133b 0%,#0753b8 52%,#071b49 100%);box-shadow:0 8px 30px #006cff66;display:flex;align-items:flex-end}
+.anime-hero:before,.anime-hero:after{display:none}
+.anime-vegeta{display:none}
+.anime-hero-content{max-width:68%;padding:14px 12px;border-radius:16px;background:linear-gradient(90deg,rgba(1,10,34,.86),rgba(1,10,34,.12));text-shadow:0 2px 8px #000}
+.anime-kicker{color:#8bd5ff;font-size:11px;letter-spacing:2px}
+.anime-hero h2{font-size:29px;color:#fff;text-shadow:0 0 14px #168bff}
+.anime-hero p{font-size:13px;color:#e0f2ff}
+.anime-chip{background:#06265b;border:1px solid #38bdf8;color:#dff5ff}
+#notificationStatus{margin:8px 0!important;background:#082451!important;border:1px solid #1d70dc;color:#b9e4ff!important;text-align:center}
+.dashboard{gap:8px;margin:12px 0}
+.stat{background:linear-gradient(145deg,#073b91,#061b49);border:1px solid #168bff;box-shadow:inset 0 0 16px #168bff33,0 5px 16px #0008;text-align:center;padding:13px 6px}
+.stat strong{color:#fff;text-shadow:0 0 12px #38bdf8;font-size:27px}
+.stat span{color:#cceaff;font-size:10px;font-weight:800}
+.card{background:linear-gradient(145deg,rgba(5,29,76,.96),rgba(3,15,43,.97));border:1px solid #168bff;box-shadow:0 6px 22px #0008,inset 0 0 14px #168bff24;border-radius:20px}
+.card h2{color:#e6f5ff;font-size:19px}
+.card:nth-of-type(4){border-color:#facc15}
+button{background:linear-gradient(135deg,#168bff,#0647b8);border:1px solid #6bcaff;box-shadow:0 4px 14px #0077ff55;color:white}
+.primary{background:linear-gradient(135deg,#168bff,#0647b8)}
+input,select{background:#071d45;border:1px solid #267bd9;color:#fff}
+.task{background:linear-gradient(110deg,#0c3475,#071b43);border:1px solid #2468bd}
+.stat strong{color:#fff}
+.progress-track{height:11px;background:#092653;border:1px solid #1b66b8}
+.progress-fill{background:linear-gradient(90deg,#0ea5e9,#38bdf8,#facc15)}
+.calendar-day{background:#0b2c65;border:1px solid #174f9e}
+.calendar-day.selected{background:#075be0;outline:2px solid #63caff}
+.calendar-day.today{border:1px solid #facc15}
+.calendar-weekday{color:#8bd5ff}
+.tag{background:#0752b5;color:#e6f5ff}
+.tag.category{background:#153d75;color:#dbeafe}
+.complete{background:linear-gradient(135deg,#16a34a,#166534)}
+.delete{background:linear-gradient(135deg,#dc2626,#991b1b)}
+.bottom-nav{position:fixed;z-index:50;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);max-width:620px;margin:0 auto;padding:8px 5px calc(8px + env(safe-area-inset-bottom));background:rgba(2,12,35,.97);border-top:1px solid #168bff;box-shadow:0 -8px 25px #0009;backdrop-filter:blur(12px)}
+.bottom-nav a{color:#b9dfff;text-decoration:none;text-align:center;font-size:11px;font-weight:700;padding:5px 2px;display:flex;flex-direction:column;gap:3px;align-items:center}
+.bottom-nav a span{font-size:22px;line-height:1.2}
+.bottom-nav a.active{color:#55caff;text-shadow:0 0 12px #168bff}
+.section-anchor{scroll-margin-top:12px}
+@media(max-width:380px){.anime-hero{min-height:270px}.anime-hero-content{max-width:75%}.anime-hero h2{font-size:24px}body{padding-left:10px;padding-right:10px}}
+
+
+/* Rediseño profesional móvil: panel de control */
+body{max-width:620px;padding:10px 13px 108px;background:radial-gradient(ellipse at 50% -8%,#174a9b 0%,#091a39 34%,#040c1d 78%);color:#f4f8ff}
+.app-topbar{display:flex;align-items:center;gap:11px;padding:8px 3px 14px}
+.brand-symbol{width:39px;height:39px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,#38bdf8,#075be0);box-shadow:0 0 20px #168bff66;color:#fff;font-size:23px;font-weight:950;font-style:italic}
+.brand-copy{display:flex;flex-direction:column;gap:2px;flex:1}
+.brand-copy strong{font-size:12px;letter-spacing:1.5px;color:#f1f8ff}
+.brand-copy span{font-size:9px;letter-spacing:1.8px;color:#82caff;font-weight:800}
+.topbar-level{font-size:10px;font-weight:900;letter-spacing:.6px;color:#c9f0ff;background:#0b2c5b;border:1px solid #247bd4;border-radius:30px;padding:8px 10px}
+.anime-hero{min-height:220px;margin:0 -13px 15px;padding:22px 17px;border-radius:23px;border:1px solid #2589ed;background:radial-gradient(circle at 82% 35%,rgba(56,189,248,.48),transparent 28%),radial-gradient(circle at 90% 90%,rgba(29,78,216,.5),transparent 36%),linear-gradient(125deg,#06183b 0%,#0a3e89 55%,#061737 100%);box-shadow:0 12px 32px #006cff35;align-items:center;position:relative}
+.anime-hero:before{display:block;width:145px;height:145px;right:20px;top:34px;border:1px solid #7dd3fc88;box-shadow:0 0 24px #38bdf866,inset 0 0 25px #38bdf833}
+.anime-hero:after{display:block;width:190px;height:2px;right:-22px;top:104px;border-radius:0;background:linear-gradient(90deg,transparent,#7dd3fc,transparent);transform:rotate(-35deg);filter:blur(1px)}
+.anime-hero-content{max-width:76%;padding:0;background:transparent;text-shadow:0 2px 10px #00102b}
+.anime-kicker{font-size:10px;letter-spacing:2.2px;color:#9be2ff}
+.anime-hero h2{font-size:28px;line-height:1.08;margin:10px 0;color:white}
+.anime-hero p{font-size:13px;line-height:1.5;color:#d8edff;max-width:290px}
+.anime-chip{margin-top:14px;font-size:9px;letter-spacing:1px;padding:7px 10px}
+h1{text-align:left;font-size:24px;margin:12px 2px 5px;color:#fff;text-shadow:0 0 15px #168bff55}
+body>p{ text-align:left;margin-left:2px}
+#notificationStatus{border-radius:12px!important;text-align:left!important;padding:11px 13px!important}
+.card{border:1px solid #1b5da7;border-radius:19px;background:linear-gradient(145deg,rgba(10,39,83,.97),rgba(5,20,48,.98));box-shadow:0 8px 24px #0005,inset 0 1px #ffffff0c;padding:17px;margin:13px 0}
+.card h2{font-size:17px;letter-spacing:.1px;color:#eaf6ff}
+.dashboard{gap:8px}
+.stat{border-radius:15px;background:linear-gradient(145deg,#10458d,#09234f);border:1px solid #287acb;padding:13px 7px}
+.stat strong{font-size:26px;color:#fff}
+.stat span{font-size:9px;letter-spacing:.7px}
+.progress-track{margin-top:13px}
+input,select{border-radius:12px!important;min-height:46px;padding:12px 13px!important;background:#071a3a!important;border:1px solid #2868ae!important}
+button{border-radius:12px;min-height:45px}
+.card button{font-weight:800}
+.task{border-radius:15px;background:linear-gradient(110deg,#10366e,#0a2148);border:1px solid #2865a8}
+.bottom-nav{border-radius:18px 18px 0 0;border-top:1px solid #2589ed;padding-top:10px;background:rgba(3,15,37,.97)}
+.bottom-nav a{font-size:10px;letter-spacing:.2px}
+.bottom-nav a.active{background:#0b3470;border-radius:12px;color:#8de0ff}
+@media(max-width:380px){.anime-hero{min-height:205px;padding:18px 14px}.anime-hero-content{max-width:78%}.anime-hero h2{font-size:25px}.anime-hero:before{right:8px;width:125px;height:125px}.card{padding:14px}}
+
+</style>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .catch(error => console.error("Error:", error));
+  });
+}
+</script>
+</head>
+<body>
+
+<div class="app-topbar"><div class="brand-symbol">M</div><div class="brand-copy"><strong>MI ORGANIZADOR</strong><span>TU CENTRO DE CONTROL</span></div><div class="topbar-level">⚡ NIVEL 1</div></div>
+
+<div class="anime-hero" aria-label="Tema azul de energía">
+  <div class="anime-hero-content">
+    <div class="anime-kicker">MODO ENERGÍA · NIVEL 1</div>
+    <h2>¡Superá tus límites!</h2>
+    <p>Cada tarea completada es un nuevo nivel. Tu entrenamiento empieza hoy.</p>
+    <span class="anime-chip">ENERGÍA · DISCIPLINA · CONSTANCIA</span>
+  </div>
+</div>
+<h1>Mi Organizador</h1>
+<p id="notificationStatus" style="font-size:13px;color:#93c5fd;background:#1e293b;padding:10px;border-radius:8px;">Comprobando el sistema de notificaciones...</p>
+<p>Un paso a la vez. Cada día cuenta.</p>
+
+<div class="card section-anchor" id="inicio"><h2>📅 Resumen de hoy</h2><div style="color:#b9dfff;font-size:13px" id="todayLabel"></div><div class="dashboard" aria-label="Resumen de tareas">
+  <div class="stat"><strong id="statPending">0</strong><span>PENDIENTES</span></div>
+  <div class="stat"><strong id="statOverdue">0</strong><span>VENCIDAS</span></div>
+  <div class="stat"><strong id="statDone">0</strong><span>COMPLETADAS</span></div>
+</div>
+</div>
+<div class="card">
+  <h2>🔥 Tu progreso</h2>
+  <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+  <small id="progressText" style="color:#cbd5e1">Todavía no hay tareas registradas.</small>
+</div>
+
+
+<div class="card section-anchor" id="metas">
+  <h2>⚡ Nueva misión</h2>
+
+  <input id="task" placeholder="¿Qué tenés que hacer?">
+
+  <label>Fecha de vencimiento</label>
+  <input type="date" id="date">
+
+  <label>Hora (opcional)</label>
+  <input type="time" id="time">
+
+  <label>Categoría</label>
+  <select id="category">
+    <option value="trabajo">💼 Trabajo</option>
+    <option value="personal" selected>👤 Personal</option>
+    <option value="estudio">📚 Estudio</option>
+    <option value="finanzas">💰 Finanzas</option>
+    <option value="salud">❤️ Salud</option>
+    <option value="hogar">🏠 Hogar</option>
+    <option value="otros">📌 Otros</option>
+  </select>
+
+  <label>Prioridad</label>
+  <select id="priority">
+    <option value="low">Baja</option>
+    <option value="medium" selected>Media</option>
+    <option value="high">Alta</option>
+  </select>
+
+  <button onclick="addTask()">Agregar tarea</button>
+</div>
+
+<div class="card section-anchor" id="calendario">
+  <h2>🌟 Mi calendario</h2>
+  <div class="calendar-head">
+    <button type="button" onclick="changeMonth(-1)" aria-label="Mes anterior">‹</button>
+    <strong id="calendarMonth"></strong>
+    <button type="button" onclick="changeMonth(1)" aria-label="Mes siguiente">›</button>
+  </div>
+  <div id="calendarGrid" class="calendar-grid"></div>
+  <div id="calendarSelected"></div>
+</div>
+
+<div class="card section-anchor" id="tareas">
+  <h2>🥋 Mis tareas</h2>
+  <p id="count"></p>
+  <div class="filters">
+    <input id="searchTasks" type="search" placeholder="🔎 Buscar una tarea..." aria-label="Buscar tareas">
+    <select id="filterCategory" aria-label="Filtrar por categoría">
+      <option value="all">Todas las categorías</option>
+      <option value="trabajo">Trabajo</option><option value="personal">Personal</option>
+      <option value="estudio">Estudio</option><option value="finanzas">Finanzas</option>
+      <option value="salud">Salud</option><option value="hogar">Hogar</option><option value="otros">Otros</option>
+    </select>
+    <select id="filterStatus" aria-label="Filtrar por estado">
+      <option value="pending">Pendientes</option><option value="all">Todas</option><option value="done">Completadas</option><option value="overdue">Vencidas</option>
+    </select>
+  </div>
+  <div id="tasks"></div>
+</div>
+
+<div class="card">
+  <h2>🚀 Próximas misiones</h2>
+  <div id="upcoming"></div>
+</div>
+
+<div class="card section-anchor" id="estadisticas">
+  <h2>💾 Respaldo de mis tareas</h2>
+  <p>Guardá una copia de tus tareas antes de actualizar la aplicación. También podés restaurarla después.</p>
+  <button type="button" onclick="exportBackup()">Exportar respaldo</button>
+  <label for="backupFile">Restaurar desde un archivo de respaldo</label>
+  <input id="backupFile" type="file" accept="application/json,.json">
+  <button type="button" onclick="importBackup()">Restaurar respaldo</button>
+  <small>El respaldo incluye tus tareas, fechas, horarios, categorías y estados.</small>
+</div>
+
+<div class="card section-anchor" id="acerca">
+  <h2>🐉 Mi objetivo</h2>
+  <p>Organizarme y avanzar cada día.</p>
+</div>
+
+<nav class="bottom-nav" aria-label="Navegación principal"><a class="active" href="#inicio"><span>⌂</span>Inicio</a><a href="#estadisticas"><span>▥</span>Estadísticas</a><a href="#metas"><span>🏆</span>Metas</a><a href="#acerca"><span>★</span>Acerca de</a></nav>
+<script>
+document.getElementById("todayLabel").textContent=new Date().toLocaleDateString("es-AR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+document.querySelectorAll(".bottom-nav a").forEach(a=>a.addEventListener("click",()=>{document.querySelectorAll(".bottom-nav a").forEach(x=>x.classList.remove("active"));a.classList.add("active")}));
+let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+tasks = tasks.map(t =>
+  typeof t === "string"
+    ? {text:t, done:false, date:"", priority:"medium"}
+    : {...t, date:t.date || "", time:t.time || "", priority:t.priority || "medium", category:t.category || "personal"}
+);
+
+let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+let selectedCalendarDate = localDateKey(new Date());
+
+function localDateKey(date) {
+  return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
+}
+function changeMonth(amount) {
+  calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth()+amount, 1);
+  renderCalendar();
+}
+function renderCalendar() {
+  const grid=document.getElementById("calendarGrid"), title=document.getElementById("calendarMonth"), selected=document.getElementById("calendarSelected");
+  if(!grid||!title||!selected)return;
+  title.textContent=calendarMonth.toLocaleDateString("es-AR",{month:"long",year:"numeric"});
+  grid.replaceChildren();
+  ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].forEach(day=>{const e=document.createElement("div");e.className="calendar-weekday";e.textContent=day;grid.append(e);});
+  const y=calendarMonth.getFullYear(),m=calendarMonth.getMonth(),offset=(new Date(y,m,1).getDay()+6)%7,days=new Date(y,m+1,0).getDate();
+  for(let i=0;i<offset;i++){const e=document.createElement("div");e.className="calendar-day empty";grid.append(e);}
+  for(let d=1;d<=days;d++){
+    const key=y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"),b=document.createElement("button");
+    b.type="button";b.className="calendar-day";b.textContent=d;
+    if(key===selectedCalendarDate)b.classList.add("selected");
+    if(key===localDateKey(new Date()))b.classList.add("today");
+    if(tasks.some(t=>t.date===key))b.classList.add("has-task");
+    b.onclick=()=>{selectedCalendarDate=key;document.getElementById("date").value=key;renderCalendar();};
+    grid.append(b);
+  }
+  selected.replaceChildren();
+  const h=document.createElement("strong");h.textContent="Actividades del "+new Date(selectedCalendarDate+"T12:00:00").toLocaleDateString("es-AR");selected.append(h);
+  const dayTasks=tasks.filter(t=>t.date===selectedCalendarDate).sort((a,b)=>(a.time||"").localeCompare(b.time||""));
+  if(!dayTasks.length){const p=document.createElement("p");p.textContent="No hay tareas para este día. Podés elegirlo para una nueva tarea.";selected.append(p);}
+  dayTasks.forEach(t=>{const p=document.createElement("div");p.className="calendar-task";p.textContent=(t.done?"✓ ":"• ")+(t.time?t.time+" · ":"")+t.text+(t.done?" (completada)":"");selected.append(p);});
+}
+
+function exportBackup() {
+  const payload = {app:"Mi Organizador", version:1, exportedAt:new Date().toISOString(), tasks};
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "mi-organizador-respaldo-" + localDateKey(new Date()) + ".json";
+  document.body.append(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  alert("Respaldo descargado. Guardalo en un lugar seguro.");
+}
+async function importBackup() {
+  const file = document.getElementById("backupFile").files[0];
+  if (!file) { alert("Elegí primero un archivo de respaldo."); return; }
+  try {
+    const data = JSON.parse(await file.text());
+    const imported = Array.isArray(data) ? data : data.tasks;
+    if (!Array.isArray(imported) || !imported.every(t => t && typeof t === "object" && typeof t.text === "string")) {
+      throw new Error("Formato inválido");
+    }
+    if (!confirm("Se reemplazarán las tareas actuales por las del respaldo (" + imported.length + "). ¿Continuar?")) return;
+    tasks = imported.map(t => ({...t, date:t.date || "", time:t.time || "", priority:t.priority || "medium", category:t.category || "personal", done:!!t.done}));
+    save();
+    alert("Respaldo restaurado correctamente.");
+  } catch (e) {
+    alert("No se pudo restaurar: el archivo no parece ser un respaldo válido de Mi Organizador.");
+  }
+}
+
+function save() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  render();
+}
+
+function addTask() {
+  const input = document.getElementById("task");
+  if (!input.value.trim()) {
+    alert("Escribí una tarea primero");
+    return;
+  }
+
+  tasks.push({
+    text: input.value.trim(),
+    date: document.getElementById("date").value,
+    time: document.getElementById("time").value,
+    priority: document.getElementById("priority").value,
+    category: document.getElementById("category").value,
+    done: false
+  });
+
+  selectedCalendarDate = tasks[tasks.length-1].date || selectedCalendarDate;
+  if(tasks[tasks.length-1].date){const d=new Date(tasks[tasks.length-1].date+"T12:00:00");calendarMonth=new Date(d.getFullYear(),d.getMonth(),1);}
+  input.value = "";
+  document.getElementById("date").value = "";
+  document.getElementById("time").value = "";
+  document.getElementById("priority").value = "medium";
+  document.getElementById("category").value = "personal";
+  save();
+}
+
+
+function editTask(index) {
+  const task = tasks[index];
+  if (!task) return;
+  const text = prompt("Descripción de la tarea:", task.text || "");
+  if (text === null) return;
+  if (!text.trim()) {
+    alert("La descripción no puede quedar vacía.");
+    return;
+  }
+  const date = prompt("Fecha (AAAA-MM-DD). Dejá vacío si no tiene fecha:", task.date || "");
+  if (date === null) return;
+  if (date && !/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) {
+    alert("La fecha debe tener el formato AAAA-MM-DD.");
+    return;
+  }
+  const time = prompt("Hora (HH:MM). Dejá vacío si no tiene hora:", task.time || "");
+  if (time === null) return;
+  if (time && !/^([01]\\d|2[0-3]):[0-5]\\d$/.test(time)) {
+    alert("La hora debe tener el formato HH:MM.");
+    return;
+  }
+  const categoryNames = {trabajo:"Trabajo",personal:"Personal",estudio:"Estudio",finanzas:"Finanzas",salud:"Salud",hogar:"Hogar",otros:"Otros"};
+  const category = prompt("Categoría: trabajo, personal, estudio, finanzas, salud, hogar u otros:", task.category || "personal");
+  if (category === null) return;
+  const normalizedCategory = category.trim().toLowerCase();
+  if (!Object.prototype.hasOwnProperty.call(categoryNames, normalizedCategory)) {
+    alert("Esa categoría no existe.");
+    return;
+  }
+  const priority = prompt("Prioridad: high (alta), medium (media) o low (baja):", task.priority || "medium");
+  if (priority === null) return;
+  const normalizedPriority = priority.trim().toLowerCase();
+  if (!["high","medium","low"].includes(normalizedPriority)) {
+    alert("La prioridad debe ser high, medium o low.");
+    return;
+  }
+  task.text = text.trim();
+  task.date = date.trim();
+  task.time = time.trim();
+  task.category = normalizedCategory;
+  task.priority = normalizedPriority;
+  save();
+}
+
+function render() {
+  const container = document.getElementById("tasks");
+  const upcoming = document.getElementById("upcoming");
+  container.replaceChildren();
+  upcoming.replaceChildren();
+
+  const today = new Date().toLocaleDateString("en-CA");
+  const pending = tasks.filter(t => !t.done).length;
+  const doneCount = tasks.length - pending;
+  const overdueCount = tasks.filter(t => !t.done && t.date && t.date < today).length;
+  document.getElementById("count").textContent =
+    pending + " pendientes · " + doneCount + " completadas";
+  document.getElementById("statPending").textContent = pending;
+  document.getElementById("statOverdue").textContent = overdueCount;
+  document.getElementById("statDone").textContent = doneCount;
+  const progress = tasks.length ? Math.round(doneCount / tasks.length * 100) : 0;
+  document.getElementById("progressFill").style.width = progress + "%";
+  document.getElementById("progressText").textContent = tasks.length
+    ? progress + "% completado · " + doneCount + " de " + tasks.length + " tareas"
+    : "Todavía no hay tareas registradas.";
+  const query = (document.getElementById("searchTasks")?.value || "").trim().toLocaleLowerCase("es");
+  const categoryFilter = document.getElementById("filterCategory")?.value || "all";
+  const statusFilter = document.getElementById("filterStatus")?.value || "pending";
+
+  const sorted = [...tasks].sort((a,b) => {
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    const byDate=a.date.localeCompare(b.date);
+    if(byDate!==0)return byDate;
+    return (a.time||"").localeCompare(b.time||"");
+  });
+
+  const visibleTasks = sorted.filter(task => {
+    const matchesText = (task.text || "").toLocaleLowerCase("es").includes(query);
+    const matchesCategory = categoryFilter === "all" || (task.category || "personal") === categoryFilter;
+    const isOverdue = !task.done && task.date && task.date < today;
+    const matchesStatus = statusFilter === "all" ||
+      (statusFilter === "pending" && !task.done) ||
+      (statusFilter === "done" && task.done) ||
+      (statusFilter === "overdue" && isOverdue);
+    return matchesText && matchesCategory && matchesStatus;
+  });
+  if (!visibleTasks.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-state";
+    empty.textContent = tasks.length ? "No hay tareas que coincidan con esos filtros." : "Todavía no agregaste tareas. ¡Empecemos con una!";
+    container.append(empty);
+  }
+  visibleTasks.forEach(task => {
+    const index = tasks.indexOf(task);
+    const div = document.createElement("div");
+    div.className = "task" + (task.done ? " done" : "");
+
+    const name = document.createElement("strong");
+    name.className = "taskname";
+    name.textContent = task.text;
+
+    const info = document.createElement("small");
+    const dateText = task.date
+      ? new Date(task.date + "T12:00:00").toLocaleDateString("es-AR")
+      : "Sin fecha";
+    info.textContent = "📅 " + dateText + (task.time ? " · 🕒 " + task.time : "") + " · Prioridad: " +
+      ({high:"Alta",medium:"Media",low:"Baja"}[task.priority] || "Media");
+    const categoryNames = {trabajo:"Trabajo",personal:"Personal",estudio:"Estudio",finanzas:"Finanzas",salud:"Salud",hogar:"Hogar",otros:"Otros"};
+    const categoryTag = document.createElement("span");
+    categoryTag.className = "tag category";
+    categoryTag.textContent = "📁 " + (categoryNames[task.category || "personal"] || "Personal");
+    const priorityTag = document.createElement("span");
+    priorityTag.className = "tag";
+    priorityTag.textContent = "Prioridad " + ({high:"Alta",medium:"Media",low:"Baja"}[task.priority] || "Media");
+    const meta = document.createElement("div");
+    meta.className = "task-meta";
+    meta.append(categoryTag, priorityTag);
+
+    if (!task.done && task.date && task.date < today) {
+      info.textContent += " · VENCIDA";
+      info.className = "high";
+    } else {
+      info.className = task.priority;
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const check = document.createElement("button");
+    check.className = "complete";
+    check.textContent = task.done ? "Deshacer" : "Completar";
+    check.onclick = () => {
+      tasks[index].done = !tasks[index].done;
+      save();
+    };
+
+    const edit = document.createElement("button");
+    edit.textContent = "Editar";
+    edit.style.background = "#475569";
+    edit.onclick = () => editTask(index);
+
+    const del = document.createElement("button");
+    del.className = "delete";
+    del.textContent = "Eliminar";
+    del.onclick = () => {
+      if (confirm("¿Eliminar esta tarea?")) {
+        tasks.splice(index, 1);
+        save();
+      }
+    };
+
+    actions.append(check, edit, del);
+    div.append(name, meta, info, actions);
+    container.append(div);
+  });
+
+  renderCalendar();
+
+  const next = sorted.filter(t => !t.done && t.date);
+  if (next.length === 0) {
+    upcoming.textContent = "No tenés actividades con fecha pendientes.";
+  } else {
+    next.slice(0,5).forEach(t => {
+      const p = document.createElement("p");
+      p.textContent = "📌 " + (t.time ? t.time + " · " : "") + t.text + " — " +
+        new Date(t.date + "T12:00:00").toLocaleDateString("es-AR");
+      upcoming.append(p);
+    });
+  }
+}
+
+["searchTasks","filterCategory","filterStatus"].forEach(id => {
+  document.getElementById(id)?.addEventListener("input", render);
+  document.getElementById(id)?.addEventListener("change", render);
+});
+render();
+</script>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
