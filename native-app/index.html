@@ -225,6 +225,18 @@ button{border-radius:12px;min-height:45px}
 .bottom-nav a.active{background:#0b3470;border-radius:12px;color:#8de0ff}
 @media(max-width:380px){.anime-hero{min-height:205px;padding:18px 14px}.anime-hero-content{max-width:78%}.anime-hero h2{font-size:25px}.anime-hero:before{right:8px;width:125px;height:125px}.card{padding:14px}}
 
+
+/* Navegación real por pantallas, optimizada para teléfono */
+.app-screen{display:none;min-height:calc(100dvh - 170px);animation:screen-in .18s ease-out}
+.app-screen.active{display:block}
+.app-screen>.card:first-child{margin-top:10px}
+.bottom-nav a{min-width:0;user-select:none}
+.bottom-nav a span{font-size:21px}
+.bottom-nav a.active{outline:1px solid #2589ed;background:linear-gradient(145deg,#0d3979,#082653);box-shadow:inset 0 0 15px #168bff33}
+body{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+@keyframes screen-in{from{opacity:.65;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:380px){.bottom-nav{padding-left:3px;padding-right:3px}.bottom-nav a{font-size:9px}.bottom-nav a span{font-size:19px}}
+
 </style>
 </head>
 <body>
@@ -344,9 +356,65 @@ button{border-radius:12px;min-height:45px}
   <p>Organizarme y avanzar cada día.</p>
 </div>
 
-<nav class="bottom-nav" aria-label="Navegación principal"><a class="active" href="#inicio"><span>⌂</span>Inicio</a><a href="#estadisticas"><span>▥</span>Estadísticas</a><a href="#metas"><span>🏆</span>Metas</a><a href="#agentes"><span>🤖</span>Agentes</a><a href="#acerca"><span>★</span>Acerca de</a></nav>
+<nav class="bottom-nav" aria-label="Navegación principal"><a class="active" href="#" data-screen="home" aria-current="page"><span>⌂</span>Inicio</a><a href="#" data-screen="tasks"><span>☷</span>Tareas</a><a href="#" data-screen="calendar"><span>▦</span>Calendario</a><a href="#" data-screen="agents"><span>🤖</span>Agentes</a><a href="#" data-screen="more"><span>•••</span>Más</a></nav>
 <script>
 document.getElementById("todayLabel").textContent=new Date().toLocaleDateString("es-AR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+
+/* Organiza el contenido en pantallas sin recrear ni borrar los controles existentes. */
+(function setupAppScreens(){
+  const body=document.body;
+  const screens={
+    home:[".app-topbar",".anime-hero","h1","#notificationStatus","body>p:not(.app-screen p)","#inicio",".card:has(#progressFill)"],
+    tasks:["#tareas",".card:has(#upcoming)"],
+    calendar:["#calendario"],
+    agents:["#agentes"],
+    more:["#metas","#estadisticas","#acerca"]
+  };
+  const views={};
+  Object.keys(screens).forEach(key=>{
+    const view=document.createElement("section");
+    view.className="app-screen"+(key==="home"?" active":"");
+    view.dataset.view=key;
+    view.setAttribute("aria-label",({home:"Inicio",tasks:"Tareas",calendar:"Calendario",agents:"Agentes",more:"Más"}[key]));
+    body.insertBefore(view,document.querySelector(".bottom-nav"));
+    views[key]=view;
+  });
+  const moved=new Set();
+  Object.entries(screens).forEach(([key,selectors])=>{
+    selectors.forEach(selector=>{
+      let node;
+      if(selector==="body>p:not(.app-screen p)"){
+        node=Array.from(body.children).find(el=>el.tagName==="P"&&!el.closest(".app-screen")&&el.id!=="todayLabel");
+      } else if(selector===".card:has(#progressFill)"){
+        node=document.getElementById("progressFill")?.closest(".card");
+      } else if(selector===".card:has(#upcoming)"){
+        node=document.getElementById("upcoming")?.closest(".card");
+      } else {
+        node=document.querySelector(selector);
+      }
+      if(node&&!moved.has(node)){views[key].appendChild(node);moved.add(node);}
+    });
+  });
+  function showScreen(key){
+    if(!views[key])return;
+    Object.entries(views).forEach(([name,view])=>{
+      const active=name===key;
+      view.classList.toggle("active",active);
+      view.setAttribute("aria-hidden",String(!active));
+    });
+    document.querySelectorAll(".bottom-nav a").forEach(link=>{
+      const active=link.dataset.screen===key;
+      link.classList.toggle("active",active);
+      if(active)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");
+    });
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll(".bottom-nav a[data-screen]").forEach(link=>{
+    link.addEventListener("click",event=>{event.preventDefault();showScreen(link.dataset.screen);});
+  });
+  window.showAppScreen=showScreen;
+})();
+
 document.querySelectorAll(".bottom-nav a").forEach(a=>a.addEventListener("click",()=>{document.querySelectorAll(".bottom-nav a").forEach(x=>x.classList.remove("active"));a.classList.add("active")}));
 let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
 
