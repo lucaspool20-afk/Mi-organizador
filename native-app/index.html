@@ -384,7 +384,7 @@ document.getElementById("todayLabel").textContent=new Date().toLocaleDateString(
     selectors.forEach(selector=>{
       let node;
       if(selector==="body>p:not(.app-screen p)"){
-        node=Array.from(body.children).find(el=>el.tagName==="P"&&!el.closest(".app-screen")&&el.id!=="todayLabel");
+        node=Array.from(body.children).find(el=>el.tagName==="P"&&!moved.has(el));
       } else if(selector===".card:has(#progressFill)"){
         node=document.getElementById("progressFill")?.closest(".card");
       } else if(selector===".card:has(#upcoming)"){
